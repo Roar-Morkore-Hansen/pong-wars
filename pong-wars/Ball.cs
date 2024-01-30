@@ -7,15 +7,17 @@ using DIKUArcade.Math;
 
 namespace pong_wars{
     public class Ball : Entity {
-        DynamicShape dynamicShape;
+        public Element element;
         public int Damage { get; private set; }
-        private const float MOVEMENT_SPEED = 0.01f;
-        public Vec2F DirectionVec { get; private set; } = new Vec2F(1.0f, 1.5f);
+        private const float SIZE = 0.04f;
+        private const float MOVEMENT_SPEED = 0.08f;
+        public Vec2F DirectionVec;
 
-        public Ball() : base(new DynamicShape(new Vec2F(0.5f, 0.5f), new Vec2F(0.04f, 0.04f)), 
-                                             new Image(Path.Combine("Assets", "Images", "ball.png"))) {
-            UpdateDirection(DirectionVec);
-            Damage = 1;
+        public Ball(Vec2F pos, Vec2F dir, Element element) : base(
+                                new DynamicShape(pos, new Vec2F(SIZE, SIZE)), 
+                                ElementControl.GetBallColor(element)) {
+            UpdateDirection(dir);
+            this.element = element;
         }
         public void UpdateDirection(Vec2F newDir) {
             DirectionVec = newDir;

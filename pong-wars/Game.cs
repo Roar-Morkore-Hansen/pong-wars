@@ -8,24 +8,23 @@ using DIKUArcade.Math;
 using DIKUArcade.Physics;
 using System;
 
-namespace pong_wars
-{
-    public class Game : DIKUGame
-    {
+namespace pong_wars {
+
+    public class Game : DIKUGame {
         private Ball ball;
         private EntityContainer<Ball> balls;
         private Block block;
         private EntityContainer<Block> blocks;
 
         public Game(WindowArgs windowArgs) : base(windowArgs) {
-            ball = new Ball();
+
+            ball = new Ball(new Vec2F(0.4f, 0.4f), new Vec2F(0.08f, 0.1f), Element.day);
             balls = new EntityContainer<Ball>();
             balls.AddEntity(ball);
 
-            Shape shape = new StationaryShape(new Vec2F(0.5f, 0.5f), new Vec2F(0.1f, 0.1f));
-            IBaseImage image = new Image(Path.Combine("Assets", "Images", "white-square.png"));
+            Shape shape = new StationaryShape(new Vec2F(0.7f, 0.7f), new Vec2F(0.1f, 0.1f));
 
-            block = new Block(shape, image);
+            block = new Block(Element.night, shape);
             blocks = new EntityContainer<Block>();
             blocks.AddEntity(block);
         }
@@ -36,8 +35,9 @@ namespace pong_wars
                 //Iterate trough every block
                 blocks.Iterate(block => {
                     CollisionData collisionData = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(), block.Shape);
-                    if (collisionData.Collision == true) {
+                    if (collisionData.Collision == true && ball.element != block.element) {
                         ball.Collision(collisionData.CollisionDir);
+                        block.Collection(ball.element);
                     }
                 });
             });
