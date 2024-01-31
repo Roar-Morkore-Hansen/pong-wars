@@ -11,22 +11,24 @@ using System;
 namespace pong_wars {
 
     public class Game : DIKUGame {
-        private Ball ball;
         private EntityContainer<Ball> balls;
-        private Block block;
         private EntityContainer<Block> blocks;
 
         public Game(WindowArgs windowArgs) : base(windowArgs) {
 
-            ball = new Ball(new Vec2F(0.4f, 0.4f), new Vec2F(0.08f, 0.1f), Element.day);
             balls = new EntityContainer<Ball>();
-            balls.AddEntity(ball);
+            Ball ball_night = new Ball(new Vec2F(0.8f, 0.8f), new Vec2F(0.08f, 0.1f), Element.night);
+            Ball ball_day = new Ball(new Vec2F(0.2f, 0.2f), new Vec2F(0.08f, 0.1f), Element.day);
+            balls.AddEntity(ball_night);
+            balls.AddEntity(ball_day);
 
-            Shape shape = new StationaryShape(new Vec2F(0.7f, 0.7f), new Vec2F(0.1f, 0.1f));
-
-            block = new Block(Element.night, shape);
-            blocks = new EntityContainer<Block>();
-            blocks.AddEntity(block);
+            Level level = new Level(22, 22);
+            blocks = level.GetBlocks();
+            
+            blocks.Iterate(block => {
+                Console.WriteLine($"{block.Shape.Position}");
+            });
+            
         }
 
         private void collision_detection() {
@@ -34,7 +36,9 @@ namespace pong_wars {
             balls.Iterate(ball => {
                 //Iterate trough every block
                 blocks.Iterate(block => {
-                    CollisionData collisionData = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(), block.Shape);
+                    CollisionData collisionData = CollisionDetection.Aabb(
+                                                                        ball.Shape.AsDynamicShape(), 
+                                                                        block.Shape);
                     if (collisionData.Collision == true && ball.element != block.element) {
                         ball.Collision(collisionData.CollisionDir);
                         block.Collection(ball.element);
@@ -43,13 +47,19 @@ namespace pong_wars {
             });
         }
 
+        private void BallsUpdate() {
+            balls.Iterate(ball => {
+                ball.Update();
+            });
+        }
+
         public override void Render() {
-            ball.Render();
             blocks.RenderEntities();
+            balls.RenderEntities();
         }
 
         public override void Update() {
-            ball.Update();
+            BallsUpdate();
             collision_detection();
         }
     }

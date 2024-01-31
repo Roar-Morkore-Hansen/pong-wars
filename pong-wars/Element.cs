@@ -22,9 +22,9 @@ namespace pong_wars {
         static public IBaseImage GetBallColor(Element elment) {
             switch(elment) {
                 case Element.day:
-                    return new Image(Path.Combine("Assets", "Images", "blue-ball.png"));
-                case Element.night:
                     return new Image(Path.Combine("Assets", "Images", "green-ball.png"));
+                case Element.night:
+                    return new Image(Path.Combine("Assets", "Images", "blue-ball.png"));
                 default:
                     throw new ArgumentException("No match");
             }
