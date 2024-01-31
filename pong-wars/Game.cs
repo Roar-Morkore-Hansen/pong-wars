@@ -17,8 +17,10 @@ namespace pong_wars {
         public Game(WindowArgs windowArgs) : base(windowArgs) {
 
             balls = new EntityContainer<Ball>();
-            Ball ball_night = new Ball(new Vec2F(0.8f, 0.8f), new Vec2F(0.08f, 0.1f), Element.night);
-            Ball ball_day = new Ball(new Vec2F(0.2f, 0.2f), new Vec2F(0.08f, 0.1f), Element.day);
+            Ball ball_day = new Ball(new Vec2F((float)1/4, (float)1/2), 
+                                       new Vec2F(1.25f, -1.25f), Element.day);
+            Ball ball_night = new Ball(new Vec2F((float)1/4 * 3, (float)1/2), 
+                                       new Vec2F(-1.25f, 1.25f), Element.night);
             balls.AddEntity(ball_night);
             balls.AddEntity(ball_day);
 

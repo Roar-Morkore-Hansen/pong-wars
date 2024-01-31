@@ -8,34 +8,33 @@ using DIKUArcade.Math;
 namespace pong_wars{
     public class Ball : Entity {
         public Element element;
-        public int Damage { get; private set; }
         private const float SIZE = 0.04f;
-        private const float MOVEMENT_SPEED = 0.08f;
-        public Vec2F DirectionVec;
+        private const float MOVEMENT_SPEED = 0.02f;
 
-        public Ball(Vec2F pos, Vec2F dir, Element element) : base(
-                                new DynamicShape(pos, new Vec2F(SIZE, SIZE)), 
-                                ElementControl.GetBallColor(element)) {
-            UpdateDirection(dir);
-            this.element = element;
+        public Ball(Vec2F pos, Vec2F dir, Element elm) : base(
+                                new DynamicShape(pos, new Vec2F(SIZE, SIZE), 
+                                                 Vec2F.Normalize(dir) * MOVEMENT_SPEED), 
+                                ElementControl.GetBallColor(elm)) {
+            element = elm;
         }
         public void UpdateDirection(Vec2F newDir) {
-            DirectionVec = newDir;
-            Shape.AsDynamicShape().ChangeDirection(newDir * MOVEMENT_SPEED);
+            Vec2F newDirNorm = Vec2F.Normalize(newDir);
+            Shape.AsDynamicShape().ChangeDirection(newDirNorm * MOVEMENT_SPEED);
         }
         public void Collision(CollisionDirection collisionDirection) {
             //Mirror the vector with the collision direction
             //Vertical (X, Y) = (-X, Y)
             //Horizontal (X, Y) = (X, -Y)
+
+            
             if (collisionDirection == CollisionDirection.CollisionDirDown || 
                 collisionDirection == CollisionDirection.CollisionDirUp) {
-                DirectionVec.Y = -DirectionVec.Y;
+                Shape.AsDynamicShape().Direction.Y = -Shape.AsDynamicShape().Direction.Y;
             } 
             else if (collisionDirection == CollisionDirection.CollisionDirLeft || 
                      collisionDirection == CollisionDirection.CollisionDirRight) {
-                DirectionVec.X = -DirectionVec.X;
+                Shape.AsDynamicShape().Direction.X = -Shape.AsDynamicShape().Direction.X;
             } 
-            UpdateDirection(DirectionVec);
         }
         
         private void Move() {
