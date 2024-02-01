@@ -7,8 +7,12 @@ using DIKUArcade.Math;
 
 namespace pong_wars{
     public class Level {
+        private Color day;
+        private Color night;
         private EntityContainer<Block> blocks;
-        public Level(int num_blocks_x, int num_blocks_y) {
+        public Level(int num_blocks_x, int num_blocks_y, Color day, Color night) {
+            this.day = day;
+            this.night = night;
             blocks = CreateBlocks(num_blocks_x, num_blocks_y);
         }
 
@@ -30,11 +34,11 @@ namespace pong_wars{
             
             Shape block_shape;
             for (int y = 0; y < num_blocks_y; y++) {
-                Color color = Color.day;
+                Color color = day;
                 for (int x = 0; x < num_blocks_x; x++) {
                     //Devide Day and night half
-                    if ((x == num_blocks_x/2) && (color == Color.day)) {
-                        color = Color.night;
+                    if ((x == num_blocks_x/2) && (color == day)) {
+                        color = night;
                     }
 
                     block_pos = new Vec2F(block_x * x, block_y * y);

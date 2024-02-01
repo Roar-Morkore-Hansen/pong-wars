@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 
@@ -7,24 +8,37 @@ namespace pong_wars {
         private int dayScor;
         private int nightScor;
         private Text scorText;
+        private Dictionary<Color, int> scorDict;
 
-        public Scor(int num_blocks_x, int num_blocks_y) {
-            int totalBlocks = num_blocks_x * num_blocks_y;
-            dayScor = totalBlocks / 2;
-            nightScor = totalBlocks / 2;
-            scorText = new Text($"{dayScor} | {nightScor}", new Vec2F(0.41f, -0.2f), new Vec2F(0.3f, 0.3f));
+        public Scor(int totalBlocks, Dictionary<Color, int> scorDict) {
+
+            this.scorDict = scorDict;
+
+            int numPlayers = scorDict.Count;
+            int startScor = totalBlocks / numPlayers;
+
+            foreach (var item in scorDict) {
+                scorDict[item.Key] = startScor;
+            }
+
+            scorText = new Text("", new Vec2F(0.2f, 0.2f), new Vec2F(0.3f, 0.3f));
+            UpdateScorText();
         }
 
-
-        public void UpdateScor(Color color) {
-            if (color == Color.day) {
-                dayScor++;
-                nightScor--;
-            } else if (color == Color.night) {
-                nightScor++;
-                dayScor--;
+        private void UpdateScorText() {
+            string newScor = "";
+            foreach (var item in scorDict) {
+                newScor += $"{item.Value}:";
             }
-            scorText.SetText($"{dayScor} | {nightScor}");
+            scorText.SetText(newScor);
+        }
+
+        public void UpdateScor(Color ballColor, Color blockColor) {
+            
+            scorDict[ballColor]++;
+            scorDict[blockColor]--;
+
+            UpdateScorText();
         }
 
         public void Render() {
