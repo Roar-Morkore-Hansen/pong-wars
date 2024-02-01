@@ -1,4 +1,6 @@
+using System;
 using System.IO;
+using System.Collections.Generic;
 
 using DIKUArcade;
 using DIKUArcade.GUI;
@@ -6,29 +8,40 @@ using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Physics;
-using System;
 
 namespace pong_wars {
 
     public class Game : DIKUGame {
+        private Scor scor;
         private EntityContainer<Ball> balls;
         private EntityContainer<Block> blocks;
 
         public Game(WindowArgs windowArgs) : base(windowArgs) {
 
+            int size = 30;
+
+            Color night = new Color(Path.Combine("Assets", "Images", "green-ball.png"),
+                                         Path.Combine("Assets", "Images", "blue-block.png"));
+
+            Color day = new Color(Path.Combine("Assets", "Images", "blue-ball.png"),
+                                       Path.Combine("Assets", "Images", "green-block.png"));
+
+
             balls = new EntityContainer<Ball>();
-            Ball ball_night = new Ball(new Vec2F(0.8f, 0.8f), new Vec2F(0.08f, 0.1f), Element.night);
-            Ball ball_day = new Ball(new Vec2F(0.2f, 0.2f), new Vec2F(0.08f, 0.1f), Element.day);
+            Ball ball_day = new Ball(new Vec2F((float)1/4, (float)1/2), 
+                                       new Vec2F(1.25f, -1.25f), day);
+            Ball ball_night = new Ball(new Vec2F((float)1/4 * 3, (float)1/2), 
+                                       new Vec2F(-1.25f, 1.25f), night);
             balls.AddEntity(ball_night);
             balls.AddEntity(ball_day);
 
-            Level level = new Level(22, 22);
+            Level level = new Level(size, size, day, night);
             blocks = level.GetBlocks();
             
-            blocks.Iterate(block => {
-                Console.WriteLine($"{block.Shape.Position}");
-            });
-            
+            Dictionary<Color, int> scorDict = new Dictionary<Color, int>(2);
+            scorDict.Add(day, 0);
+            scorDict.Add(night, 0);
+            scor = new Scor(size*size, scorDict);
         }
 
         private void collision_detection() {
@@ -39,9 +52,11 @@ namespace pong_wars {
                     CollisionData collisionData = CollisionDetection.Aabb(
                                                                         ball.Shape.AsDynamicShape(), 
                                                                         block.Shape);
-                    if (collisionData.Collision == true && ball.element != block.element) {
+                    if (collisionData.Collision == true && ball.color != block.color) {
+                        scor.UpdateScor(ball.color, block.color);
+                        
                         ball.Collision(collisionData.CollisionDir);
-                        block.Collection(ball.element);
+                        block.Collection(ball.color);
                     }
                 });
             });
@@ -56,6 +71,7 @@ namespace pong_wars {
         public override void Render() {
             blocks.RenderEntities();
             balls.RenderEntities();
+            scor.Render();
         }
 
         public override void Update() {
