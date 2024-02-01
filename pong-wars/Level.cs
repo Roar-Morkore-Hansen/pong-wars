@@ -30,18 +30,18 @@ namespace pong_wars{
             
             Shape block_shape;
             for (int y = 0; y < num_blocks_y; y++) {
-                Element element = Element.day;
+                Color color = Color.day;
                 for (int x = 0; x < num_blocks_x; x++) {
                     //Devide Day and night half
-                    if ((x == num_blocks_x/2) && (element == Element.day)) {
-                        element = Element.night;
+                    if ((x == num_blocks_x/2) && (color == Color.day)) {
+                        color = Color.night;
                     }
 
                     block_pos = new Vec2F(block_x * x, block_y * y);
                     block_shape = new StationaryShape(block_pos, block_ext);
 
 
-                    new_blocks.AddEntity(new Block(element, block_shape));
+                    new_blocks.AddEntity(new Block(color, block_shape));
                 }
             }
             return new_blocks;

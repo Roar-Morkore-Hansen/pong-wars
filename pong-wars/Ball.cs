@@ -8,15 +8,15 @@ using DIKUArcade.Math;
 namespace pong_wars{
     public class Ball : Entity {
         Random r = new Random();
-        public Element element;
+        public Color color;
         private const float SIZE = 0.04f;
         private const float MOVEMENT_SPEED = 0.04f;
 
-        public Ball(Vec2F pos, Vec2F dir, Element elm) : base(
+        public Ball(Vec2F pos, Vec2F dir, Color color) : base(
                                 new DynamicShape(pos, new Vec2F(SIZE, SIZE), 
                                                  Vec2F.Normalize(dir) * MOVEMENT_SPEED), 
-                                ElementControl.GetBallColor(elm)) {
-            element = elm;
+                                ColorControl.GetBallColor(color)) {
+            this.color = color;
         }
         public void UpdateDirection(Vec2F newDir) {
             Vec2F newDirNorm = Vec2F.Normalize(newDir);

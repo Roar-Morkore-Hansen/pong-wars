@@ -21,9 +21,9 @@ namespace pong_wars {
 
             balls = new EntityContainer<Ball>();
             Ball ball_day = new Ball(new Vec2F((float)1/4, (float)1/2), 
-                                       new Vec2F(1.25f, -1.25f), Element.day);
+                                       new Vec2F(1.25f, -1.25f), Color.day);
             Ball ball_night = new Ball(new Vec2F((float)1/4 * 3, (float)1/2), 
-                                       new Vec2F(-1.25f, 1.25f), Element.night);
+                                       new Vec2F(-1.25f, 1.25f), Color.night);
             balls.AddEntity(ball_night);
             balls.AddEntity(ball_day);
 
@@ -44,10 +44,10 @@ namespace pong_wars {
                     CollisionData collisionData = CollisionDetection.Aabb(
                                                                         ball.Shape.AsDynamicShape(), 
                                                                         block.Shape);
-                    if (collisionData.Collision == true && ball.element != block.element) {
+                    if (collisionData.Collision == true && ball.color != block.color) {
                         ball.Collision(collisionData.CollisionDir);
-                        block.Collection(ball.element);
-                        scor.UpdateScor(ball.element);
+                        block.Collection(ball.color);
+                        scor.UpdateScor(ball.color);
                     }
                 });
             });

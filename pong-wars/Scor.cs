@@ -16,11 +16,11 @@ namespace pong_wars {
         }
 
 
-        public void UpdateScor(Element element) {
-            if (element == Element.day) {
+        public void UpdateScor(Color color) {
+            if (color == Color.day) {
                 dayScor++;
                 nightScor--;
-            } else if (element == Element.night) {
+            } else if (color == Color.night) {
                 nightScor++;
                 dayScor--;
             }
