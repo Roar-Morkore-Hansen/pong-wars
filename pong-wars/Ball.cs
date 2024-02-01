@@ -7,9 +7,10 @@ using DIKUArcade.Math;
 
 namespace pong_wars{
     public class Ball : Entity {
+        Random r = new Random();
         public Element element;
         private const float SIZE = 0.04f;
-        private const float MOVEMENT_SPEED = 0.02f;
+        private const float MOVEMENT_SPEED = 0.04f;
 
         public Ball(Vec2F pos, Vec2F dir, Element elm) : base(
                                 new DynamicShape(pos, new Vec2F(SIZE, SIZE), 
@@ -26,15 +27,17 @@ namespace pong_wars{
             //Vertical (X, Y) = (-X, Y)
             //Horizontal (X, Y) = (X, -Y)
 
-            
+            Vec2F newDir = Shape.AsDynamicShape().Direction;
+
             if (collisionDirection == CollisionDirection.CollisionDirDown || 
                 collisionDirection == CollisionDirection.CollisionDirUp) {
-                Shape.AsDynamicShape().Direction.Y = -Shape.AsDynamicShape().Direction.Y;
+                newDir.Y = -newDir.Y;
             } 
             else if (collisionDirection == CollisionDirection.CollisionDirLeft || 
                      collisionDirection == CollisionDirection.CollisionDirRight) {
-                Shape.AsDynamicShape().Direction.X = -Shape.AsDynamicShape().Direction.X;
-            } 
+                newDir.X = -newDir.X;
+            }
+            UpdateDirection(newDir);
         }
         
         private void Move() {

@@ -11,10 +11,13 @@ using System;
 namespace pong_wars {
 
     public class Game : DIKUGame {
+        private Scor scor;
         private EntityContainer<Ball> balls;
         private EntityContainer<Block> blocks;
 
         public Game(WindowArgs windowArgs) : base(windowArgs) {
+
+            int size = 30;
 
             balls = new EntityContainer<Ball>();
             Ball ball_day = new Ball(new Vec2F((float)1/4, (float)1/2), 
@@ -24,13 +27,13 @@ namespace pong_wars {
             balls.AddEntity(ball_night);
             balls.AddEntity(ball_day);
 
-            Level level = new Level(22, 22);
+            Level level = new Level(size, size);
             blocks = level.GetBlocks();
             
             blocks.Iterate(block => {
-                Console.WriteLine($"{block.Shape.Position}");
             });
             
+            scor = new Scor(size, size);
         }
 
         private void collision_detection() {
@@ -44,6 +47,7 @@ namespace pong_wars {
                     if (collisionData.Collision == true && ball.element != block.element) {
                         ball.Collision(collisionData.CollisionDir);
                         block.Collection(ball.element);
+                        scor.UpdateScor(ball.element);
                     }
                 });
             });
@@ -58,6 +62,7 @@ namespace pong_wars {
         public override void Render() {
             blocks.RenderEntities();
             balls.RenderEntities();
+            scor.Render();
         }
 
         public override void Update() {
